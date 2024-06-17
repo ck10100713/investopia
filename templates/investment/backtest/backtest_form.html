@@ -1,0 +1,100 @@
+<!-- backtest.html -->
+{% extends 'base.html' %}
+
+{% block title %}Backtest Page{% endblock %}
+
+{% block head %}
+    <style>
+        .button {
+            padding: 10px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h2>Backtest Services</h2>
+    <p>Welcome to our investment services page. Choose an option below to continue:</p>
+
+    <form method="post" action="{% url 'backtest' %}">
+        {% csrf_token %}
+        <label for="backtest_type">Backtest Type:</label>
+        <select id="backtest_type" name="backtest_type" onchange="this.form.submit()">
+            <option value="" disabled selected>Please choose options</option>
+            <option value='AVG' {% if backtest_type == 'AVG' %}selected{% endif %}>定期定額策略</option>
+            <option value='MA' {% if backtest_type == 'MA' %}selected{% endif %}>均線策略</option>
+            <option value='BB' {% if backtest_type == 'BB' %}selected{% endif %}>布林帶策略</option>
+        </select>
+        <br><br>
+    
+    {% if backtest_type == 'AVG' %}
+    <div id="avg_backtest_form">
+        <label for="ticker">Ticker:</label>
+        {{ form.ticker }}
+        <br><br>
+        <label for="start_date">Start Date:</label>
+        {{ form.start_date }}
+        <br><br>
+        <label for="end_date">End Date:</label>
+        {{ form.end_date }}
+        <br><br>
+        <label for="days">Days:</label>
+        {{ form.days }}
+        <br><br>
+        <label for="amount">Amount:</label>
+        {{ form.amount }}
+        <br><br>
+    </div>
+    {% endif %}
+
+    {% if backtest_type == 'BB' %}
+    <div id="bb_backtest_form">
+        <label for="ticker">Ticker:</label>
+        {{ form.ticker }}
+        <br><br>
+        <label for="start_date">Start Date:</label>
+        {{ form.start_date }}
+        <br><br>
+        <label for="end_date">End Date:</label>
+        {{ form.end_date }}
+        <br><br>
+        <label for="std_dev">Standard Deviation:</label>
+        {{ form.std_dev }}
+        <br><br>
+        <label for="amount">Amount:</label>
+        {{ form.amount }}
+        <br><br>
+    </div>
+    {% endif %}
+
+    {% if backtest_type == 'MA' %}
+    <div id="ma_backtest_form">
+        <label for="ticker">Ticker:</label>
+        {{ form.ticker }}
+        <br><br>
+        <label for="start_date">Start Date:</label>
+        {{ form.start_date }}
+        <br><br>
+        <label for="end_date">End Date:</label>
+        {{ form.end_date }}
+        <br><br>
+        <label for="short_window">Short Window:</label>
+        {{ form.short_window }}
+        <br><br>
+        <label for="long_window">Long Window:</label>
+        {{ form.long_window }}
+        <br><br>
+        <label for="amount">Amount:</label>
+        {{ form.amount }}
+        <br><br>
+    </div>
+    {% endif %}
+
+    <input type="submit" value="Submit" class="button">
+</form>
+{% endblock %}

@@ -1,0 +1,24 @@
+<!-- backtest_result.html -->
+{% extends 'base.html' %}
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
+    <h1>Results</h1>
+    <p>Stock Ticker: {{ ticker }}</p>
+    {% if strategy_type == 'AVG' %}
+        <p>Strategy Type: 定期定額</p>
+        <p>Strategy Parameters: [日期,金額] = {{ strategy_parameters }}</p>
+    {% endif %}
+    
+    <p>Start Date: {{ start_date }}</p>
+    <p>End Date: {{ end_date }}</p>
+    <p>Total Cost: {{ total_cost }}</p>
+    <p>Total Revenue: {{ total_revenue }}</p>
+
+    <h2>Price Movement and Trades</h2>
+    <img src="{{ price_movement_image }}" alt="Price Movement and Trades">
+
+    <h2>Cost and Revenue Trends</h2>
+    <img src="{{ cost_revenue_image }}" alt="Cost and Revenue Trends">
+{% endblock %}

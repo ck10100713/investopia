@@ -1,0 +1,28 @@
+<!-- investment.html -->
+{% extends 'base.html' %}
+
+{% block title %}Investment Page{% endblock %}
+
+{% block head %}
+    <style>
+        .button {
+            padding: 10px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h2>Investment Services</h2>
+    <p>Welcome to our investment services page. Choose an option below to continue:</p>
+    <a href="/investment/calculate/" class="button">Calculate Returns</a><br>
+    <a href="/investment/dollar-cost-averaging/" class="button">Dollar-Cost-Averaging</a><br>
+    <a href="/investment/stock-list/" class="button">Stock List</a><br>
+    <a href="/investment/import-data/" class="button">Import Data</a><br>
+    <a href="/investment/backtest/" class="button">Backtest Page</a><br>
+{% endblock %}

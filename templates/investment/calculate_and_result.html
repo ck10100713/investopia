@@ -1,0 +1,20 @@
+<!-- calculate_and_result.html -->
+{% extends 'base.html' %}
+
+{% block title %}
+Investment Calculator
+{% endblock %}
+
+{% block content %}
+    <h1>Investment Return Calculator</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Calculate</button>
+    </form>
+
+    {% if result %}
+        <h2>Calculation Result</h2>
+        <p>Total Return: {{ total_return }}</p>
+    {% endif %}
+{% endblock %}

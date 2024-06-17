@@ -1,0 +1,62 @@
+<!-- import_data.html -->
+{% extends 'base.html' %}
+
+{% block title %}Import Data{% endblock %}
+
+{% block head %}
+    <style>
+        .import-container {
+            padding: 20px;
+            margin: auto;
+            max-width: 600px;
+        }
+        .import-header {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .import-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .import-form label {
+            margin-bottom: 10px;
+        }
+        .import-form input {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .import-form button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .import-form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="import-container">
+        <h1 class="import-header">Import Stock Data</h1>
+        <form class="import-form" method="post">
+            {% csrf_token %}
+            <label for="ticker">Stock Ticker:</label>
+            <input type="text" id="ticker" name="ticker" required>
+
+            <label for="start_date">Start Date:</label>
+            <input type="date" id="start_date" name="start_date" required>
+
+            <label for="end_date">End Date:</label>
+            <input type="date" id="end_date" name="end_date" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}

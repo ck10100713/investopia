@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}View Profile{% endblock %}
+
+{% block head %}
+    <style>
+        .profile-info {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .profile-info h2 {
+            margin-top: 0;
+        }
+        .button {
+            padding: 10px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="profile-info">
+        <h2>Profile Information</h2>
+        <p><strong>First Name:</strong> {{ user.first_name }}</p>
+        <p><strong>Last Name:</strong> {{ user.last_name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Date Joined:</strong> {{ user.date_joined }}</p>
+        <a href="{% url 'edit_profile' %}" class="button">Edit Profile</a>
+        <a href="{% url 'member_center' %}" class="button">Back to Member Center</a>
+    </div>
+{% endblock %}

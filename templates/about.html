@@ -1,0 +1,42 @@
+<!-- about.html -->
+{% extends 'base.html' %}
+
+{% block title %}About Us{% endblock %}
+
+{% block head %}
+    <style>
+        .about-container {
+            padding: 20px;
+            margin: auto;
+            max-width: 800px;
+            text-align: center;
+        }
+        .about-header {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        .about-content {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="about-container">
+        <h1 class="about-header">About Us</h1>
+        <div class="about-content">
+            <p>Welcome to our website! We are dedicated to providing the best investment services for our users. Our team of experts has years of experience in the finance industry, and we are passionate about helping you achieve your financial goals.</p>
+            <p>Our services include:</p>
+            <ul>
+                <li>Regular investment calculations</li>
+                <li>Advanced investment strategies</li>
+                <li>Comprehensive market analysis</li>
+                <li>Personalized financial advice</li>
+            </ul>
+            <p>We believe in transparency, reliability, and continuous improvement. Our goal is to empower you with the knowledge and tools you need to make informed investment decisions.</p>
+            <p>Thank you for choosing us as your trusted investment advisor.</p>
+            <p>If you have any questions, feel free to <a href="{% url 'contact' %}">contact us</a>.</p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+<!-- stock_detail.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Stock Detail for {{ ticker }}</h1>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% else %}
+        <p>Date: {{ latest_date }}</p>
+        <p>Close Price: {{ latest_close }}</p>
+        <p>Volume: {{ latest_volume }}</p>
+        <body>
+            {% autoescape off %}
+            {{ graphic }}
+            {% endautoescape %}
+        </body>
+    {% endif %}
+{% endblock %}

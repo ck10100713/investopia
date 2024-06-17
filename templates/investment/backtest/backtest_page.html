@@ -1,0 +1,27 @@
+<!-- backtest_page.html -->
+{% extends 'base.html' %}
+
+{% block title %}Backtest Page{% endblock %}
+
+{% block head %}
+    <style>
+        .button {
+            padding: 10px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <h2>Investment Services</h2>
+    <p>Welcome to our investment services page. Choose an option below to continue:</p>
+    <a href="{% url 'avg_backtest' %}" class="button">定期定額策略</a><br>
+    <a href="{% url 'ma_backtest' %}" class="button">均線策略</a><br>
+    <a href="{% url 'bb_backtest' %}" class="button">布林帶策略</a><br>
+    <!-- 如果有其他策略，可以繼續添加 -->
+{% endblock %}

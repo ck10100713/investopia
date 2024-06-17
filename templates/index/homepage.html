@@ -1,0 +1,19 @@
+<!-- homepage.html -->
+{% extends "base.html" %}
+{% block content %}
+Welcome to the
+Investment Platform
+
+{% if user.is_authenticated %}
+    Hello, {{ user.username }}!</br>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+{% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">Login Page</a><br>
+    <a href="{% url 'register' %}">Register Page</a>
+{% endif %}
+
+{% endblock %}

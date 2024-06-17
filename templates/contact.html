@@ -1,0 +1,62 @@
+<!-- contact.html -->
+{% extends 'base.html' %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block head %}
+    <style>
+        .contact-container {
+            padding: 20px;
+            margin: auto;
+            max-width: 600px;
+        }
+        .contact-header {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .contact-form label {
+            margin-bottom: 10px;
+        }
+        .contact-form input, .contact-form textarea {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .contact-form button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .contact-form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="contact-container">
+        <h1 class="contact-header">Contact Us</h1>
+        <form class="contact-form" method="post">
+            {% csrf_token %}
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+{% endblock %}
