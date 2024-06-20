@@ -5,10 +5,10 @@ from django.contrib import admin
 class StockData(models.Model):
     Ticker = models.CharField(max_length=10)
     Date = models.DateField()
-    Open = models.DecimalField(max_digits=10, decimal_places=2)
-    High = models.DecimalField(max_digits=10, decimal_places=2)
-    Low = models.DecimalField(max_digits=10, decimal_places=2)
-    Close = models.DecimalField(max_digits=10, decimal_places=2)
+    Open = models.FloatField()
+    High = models.FloatField()
+    Low = models.FloatField()
+    Close = models.FloatField()
     Volume = models.IntegerField()
 
     def __str__(self):

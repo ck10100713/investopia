@@ -4,15 +4,12 @@
 {% block title %}Results{% endblock %}
 
 {% block content %}
-    <h1>Results</h1>
+    <h1>Strategy Type: {{strategy_type}}</h1>
     <p>Stock Ticker: {{ ticker }}</p>
-    {% if strategy_type == 'AVG' %}
-        <p>Strategy Type: 定期定額</p>
-        <p>Strategy Parameters: [日期,金額] = {{ strategy_parameters }}</p>
-    {% endif %}
-    
     <p>Start Date: {{ start_date }}</p>
     <p>End Date: {{ end_date }}</p>
+    <p>Buy Condition: {{ buy_condition }}</p>
+    <p>Sell Condition: {{ sell_condition }}</p>
     <p>Total Cost: {{ total_cost }}</p>
     <p>Total Revenue: {{ total_revenue }}</p>
 
