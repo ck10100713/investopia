@@ -1,25 +1,10 @@
 from django.shortcuts import render, redirect
 from investment.models import StockData
+from .forms import AvgBacktestForm
+from django.http import HttpResponse
 import pandas as pd
-import matplotlib.pyplot as plt
-import io
-import base64
-
-plt_size = (10, 5)
-
-def get_data_from_db(ticker, start_date = None, end_date = None):
-    ticker = ticker.upper()
-    if start_date and end_date:
-        data = StockData.objects.filter(Ticker=ticker, Date__range=[start_date, end_date]).order_by('Date')
-    else:
-        data = StockData.objects.filter(Ticker=ticker).order_by('Date')
-    data = pd.DataFrame(list(data.values()))
-    data['Date'] = pd.to_datetime(data['Date'])
-    data['Year'] = data['Date'].dt.year
-    data['Month'] = data['Date'].dt.month
-    data['Day'] = data['Date'].dt.day
-    data = data.reindex(columns=['Ticker', 'Date', 'Year', 'Month', 'Day', 'Open', 'High', 'Low', 'Close', 'Volume'])
-    return data
+from tools.grapic import generate_cost_revenue_image, generate_price_movement_image
+from tools.data import get_data_from_db
 
 def backtest(request):
     return render(request, 'backtest.html')
@@ -27,51 +12,38 @@ def backtest(request):
 def avg_backtest(request):
     return render(request, 'investment/backtest/avg_backtest_page.html')
 
-def generate_price_movement_image(data):
-    plt.figure(figsize=plt_size)
-    plt.plot(data['Date'], data['Close'], label='Close Price', color='black')
-    plt.scatter(data[data['shares'] > 0]['Date'], data[data['shares'] > 0]['Close'], marker='^', color='green', label='Buy Signal', s=50)
-    # plt.scatter(filtered_data[filtered_data['shares'] == 0]['Date'], filtered_data[filtered_data['shares'] == 0]['Close'], marker='v', color='red')
-    plt.title('Dollar Cost Averaging')
-    plt.xlabel('Date')
-    plt.ylabel('Close Price')
-    plt.legend()
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    image_base64 = base64.b64encode(buffer.getvalue()).decode()
-    buffer.close()
-    image_data = f"data:image/png;base64,{image_base64}"
-    return image_data
-
-def generate_cost_revenue_image(data):
-    plt.figure(figsize=plt_size)
-    plt.plot(data['Date'], data['cumulative_cost'], label='Cumulative Cost', color='blue')
-    plt.plot(data['Date'], data['amount'], label='Amount', color='red')
-    plt.title('Dollar Cost Averaging')
-    plt.xlabel('Date')
-    plt.ylabel('Amount')
-    plt.legend()
-    buffer = io.BytesIO()
-    plt.savefig(buffer, format='png')
-    buffer.seek(0)
-    image_base64 = base64.b64encode(buffer.getvalue()).decode()
-    buffer.close()
-    image_data = f"data:image/png;base64,{image_base64}"
-    return image_data
-
-def cal_avg_return(ticker, amount, buy_condition, sell_condition, start_date = None, end_date = None):
+def cal_avg_return(ticker, amount, buy_condition_parms, sell_condition_parms, start_date = None, end_date = None):
     data = get_data_from_db(ticker, start_date, end_date)
     monthly_amount = amount
-    filtered_data = data.copy()
-    filtered_data['shares'] = 0
-    filtered_data.loc[filtered_data['Day'] == buy_condition, 'shares'] = monthly_amount // (filtered_data.loc[filtered_data['Day'] == buy_condition, 'Close'])
-    filtered_data['cost'] = filtered_data['shares'] * filtered_data['Close']
-    filtered_data['cumulative_shares'] = filtered_data['shares'].cumsum()
-    filtered_data['amount'] = filtered_data['cumulative_shares'] * filtered_data['Close']
-    filtered_data['cumulative_cost'] = filtered_data['cost'].cumsum()
-    filtered_data['return'] = filtered_data['amount'] - filtered_data['cumulative_cost']
-    return filtered_data
+    data['shares'] = 0
+    data['rest_money'] = 0
+    data['cumulative_cost'] = 0
+    shares = 0
+    rest_money = 0
+    prev = 0
+    cost = 0
+    for i in range(len(data)):
+        if data.iloc[i]['Day'] > buy_condition_parms:
+            today = 1
+        elif data.iloc[i]['Day'] == buy_condition_parms:
+            today = 0
+        else:
+            today = -1
+        if today == 0 or today - prev == 2:
+            rest_money += monthly_amount
+            cost += monthly_amount
+            close = round(data.iloc[i]['Close'],2)
+            buy_share = rest_money // close
+            shares += buy_share
+            rest_money = rest_money - buy_share * close
+        prev = today
+        data.loc[i, 'shares'] = shares
+        data.loc[i, 'rest_money'] = rest_money
+        data.loc[i, 'cumulative_cost'] = cost
+    # summation
+    data['shares_diff'] = data['shares'].diff()
+    data['amount'] = data['Close'] * data['shares'] + data['rest_money']
+    return data
 
 def avg_backtest_result(request):
     if request.method == 'POST':
@@ -79,10 +51,14 @@ def avg_backtest_result(request):
         ticker = request.POST['ticker']
         start_date = request.POST['start_date']
         end_date = request.POST['end_date']
+        if start_date > end_date:
+            return HttpResponse('Start date cannot be greater than end date.')
         amount = float(request.POST['amount'])
-        buy_condition = int(request.POST['days'])
-        sell_condition = None
-        return_data = cal_avg_return(ticker, amount, buy_condition, sell_condition, start_date, end_date)
+        buy_condition_parms = int(request.POST['days'])
+        sell_condition_parms = None
+        return_data = cal_avg_return(ticker, amount, buy_condition_parms, sell_condition_parms, start_date, end_date)
+        buy_condition = 'Buy on day {} every month'.format(buy_condition_parms)
+        sell_condition = 'None'
         total_cost = return_data['cumulative_cost'].iloc[-1]
         total_revenue = return_data['amount'].iloc[-1]
         price_movement_image = generate_price_movement_image(return_data)
@@ -90,7 +66,8 @@ def avg_backtest_result(request):
         return render(request, 'investment/backtest/backtest_results.html', {'ticker': ticker, 'strategy_type': strategy_type,
                 'start_date': start_date, 'end_date': end_date,
                 'buy_condition': buy_condition, 'sell_condition': sell_condition,
-                'total_cost': total_cost, 'total_revenue': total_revenue,
+                'initial_money' : amount, 'total_cost': total_cost, 'total_revenue': total_revenue,
                 'price_movement_image': price_movement_image, 'cost_revenue_image': cost_revenue_image})
     else:
-        return redirect('avg_backtest')
+        form = AvgBacktestForm()
+    return render(request, 'investment/backtest/avg_backtest_page.html', {'form': form})

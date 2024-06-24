@@ -2,23 +2,19 @@
 {% block title %}BB Backtest Pages{% endblock %}
 {% block content %}
 <!-- bb_backtest_page.html -->
-<form method="post" action="{% url 'bb_backtest_result' %}">
+<form method="post">
     {% csrf_token %}
-    <label for="ticker">Ticker:</label>
-    <input type="text" id="ticker" name="ticker" required>
-    <br><br>
-    <label for="start_date">Start Date:</label>
-    <input type="date" id="start_date" name="start_date" required>
-    <br><br>
-    <label for="end_date">End Date:</label>
-    <input type="date" id="end_date" name="end_date" required>
-    <br><br>
-    <label for="ma">MA:</label>
-    <input type="number" id="ma" name="ma" min="1" required>
-    <br><br>
-    <label for="std">STD:</label>
-    <input type="number" id="std" name="std" min="1" required>
-    <br><br>
-    <input type="submit" value="Submit">
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
 </form>
+
+{% if form.errors %}
+    <ul>
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+{% endif %}
 {% endblock %}

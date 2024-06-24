@@ -4,24 +4,7 @@
 <!-- ma_backtest_page.html -->
 <form method="post" action="{% url 'ma_backtest_result' %}">
     {% csrf_token %}
-    <label for="ticker">Ticker:</label>
-    <input type="text" id="ticker" name="ticker" required>
-    <br><br>
-    <label for="start_date">Start Date:</label>
-    <input type="date" id="start_date" name="start_date" required>
-    <br><br>
-    <label for="end_date">End Date:</label>
-    <input type="date" id="end_date" name="end_date" required>
-    <br><br>
-    <label for="short_ma">Short term MA:</label>
-    <input type="number" id="short_ma" name="short_ma" min="1" required>
-    <br><br>
-    <label for="mid_ma">Mid term MA:</label>
-    <input type="number" id="mid_ma" name="mid_ma" min="1" required>
-    <br><br>
-    <label for="long_ma">Ling term MA:</label>
-    <input type="number" id="long_ma" name="long_ma" min="1" required>
-    <br><br>
+    {{ form.as_p }}
     <input type="submit" value="Submit">
 </form>
 {% endblock %}
